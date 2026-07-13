@@ -1,17 +1,13 @@
-tasks = [
-    {
-        "id": 1,
-        "title": "Learn AWS",
-        "status": "completed"
-    },
-    {
-        "id": 2,
-        "title": "Learn Docker",
-        "status": "pending"
-    }
-]
+import json
+
+
+FILE_PATH = "tasks.json"
 
 
 def get_all_tasks():
+
+    with open(FILE_PATH, "r") as file:
+
+        tasks = json.load(file)
 
     return tasks
