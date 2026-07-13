@@ -10,3 +10,8 @@ tasks = [
         "status": "pending"
     }
 ]
+
+
+def get_all_tasks():
+
+    return tasks
