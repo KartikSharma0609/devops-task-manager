@@ -37,3 +37,6 @@ def save_tasks(tasks):
             file,
             indent=4
         )
+def update_task_data(tasks):
+
+    save_tasks(tasks)

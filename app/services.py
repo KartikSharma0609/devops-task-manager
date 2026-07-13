@@ -34,3 +34,42 @@ def create_new_task(title):
 
 
     return new_task
+
+
+def update_existing_task(task_id, updates):
+
+    tasks = get_all_tasks()
+
+
+    for task in tasks:
+
+        if int(task["id"]) == int(task_id):
+
+            if "title" in updates:
+
+                if not updates["title"].strip():
+
+                    return None
+
+                task["title"] = updates["title"]
+
+
+            if "status" in updates:
+
+                if updates["status"] not in [
+                    "pending",
+                    "completed"
+                ]:
+
+                    return None
+
+
+                task["status"] = updates["status"]
+
+
+            save_tasks(tasks)
+
+            return task
+
+
+    return False
