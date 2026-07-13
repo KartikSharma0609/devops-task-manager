@@ -8,6 +8,11 @@ def fetch_tasks():
 
 def create_new_task(title):
 
+    if not title.strip():
+
+        return None
+
+
     tasks = get_all_tasks()
 
 

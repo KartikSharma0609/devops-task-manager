@@ -26,16 +26,36 @@ def get_tasks():
     return jsonify(tasks)
 
 
-
 @main_routes.route("/tasks", methods=["POST"])
 def add_task():
 
-    data = request.get_json()
+    data = request.get_json(silent=True)
+
+
+    if data is None:
+
+        return jsonify({
+            "error": "Request body is required"
+        }), 400
+
+
+    if "title" not in data:
+
+        return jsonify({
+            "error": "Title is required"
+        }), 400
 
 
     task = create_new_task(
-        data["title"]
+    data["title"]
     )
 
 
-    return jsonify(task), 201
+    if task is None:
+
+        return jsonify({
+            "error": "Title cannot be empty"
+        }),400
+
+
+    return jsonify(task),201
