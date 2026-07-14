@@ -3,7 +3,8 @@ from flask import Blueprint, jsonify, request
 from app.services import (
     fetch_tasks,
     create_new_task,
-    update_existing_task
+    update_existing_task,
+    delete_existing_task
 )
 
 main_routes = Blueprint(
@@ -104,3 +105,19 @@ def update_task(id):
 
 
     return jsonify(task)
+
+
+@main_routes.route("/tasks/<int:id>", methods=["DELETE"])
+def delete_task(id):
+
+    deleted = delete_existing_task(id)
+
+    if not deleted:
+
+        return jsonify({
+            "error": "Task not found"
+        }), 404
+
+    return jsonify({
+        "message": "Task deleted successfully"
+    }), 200

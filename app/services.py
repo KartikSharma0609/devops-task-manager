@@ -73,3 +73,20 @@ def update_existing_task(task_id, updates):
 
 
     return False
+
+
+def delete_existing_task(task_id):
+
+    tasks = get_all_tasks()
+
+    for task in tasks:
+
+        if task["id"] == task_id:
+
+            tasks.remove(task)
+
+            save_tasks(tasks)
+
+            return True
+
+    return False
