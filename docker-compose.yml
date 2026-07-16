@@ -1,10 +1,44 @@
 services:
 
+  postgres:
+
+    image: postgres:17
+
+    container_name: postgres-db
+
+    restart: always
+
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database:/docker-entrypoint-initdb.d
+
   app:
 
     build: .
 
     container_name: task-manager
 
+    depends_on:
+      - postgres
+
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+
     ports:
       - "5000:5000"
+
+volumes:
+
+  postgres_data:
