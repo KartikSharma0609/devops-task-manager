@@ -21,7 +21,12 @@
     },
     {
         "id": 6,
-        "title": "Learn Kubernetes",
+        "title": "Devops",
+        "status": "pending"
+    },
+    {
+        "id": 7,
+        "title": "Azure",
         "status": "pending"
     }
 ]

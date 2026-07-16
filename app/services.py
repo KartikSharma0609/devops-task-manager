@@ -16,16 +16,16 @@ def create_new_task(title):
     tasks = get_all_tasks()
 
 
+    if tasks:
+        new_id = max(task["id"] for task in tasks) + 1
+    else:
+        new_id = 1
+
     new_task = {
-
-        "id": len(tasks) + 1,
-
-        "title": title,
-
+        "id": new_id,
+        "title": title.strip(),
         "status": "pending"
-
     }
-
 
     tasks.append(new_task)
 
