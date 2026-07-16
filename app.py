@@ -1,12 +1,11 @@
 from app import create_app
+from app.config import Config
 
-
-application = create_app()
-
+application=create_app()
 
 if __name__ == "__main__":
     application.run(
-        host="0.0.0.0",
-        port=5000,
-        debug=True
+        host=Config.HOST,
+        port=Config.PORT,
+        debug=Config.DEBUG
     )

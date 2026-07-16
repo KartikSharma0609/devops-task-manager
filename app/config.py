@@ -1,10 +1,7 @@
+import os
+
+
 class Config:
-    DEBUG = False
-
-
-class DevelopmentConfig(Config):
-    DEBUG = True
-
-
-class ProductionConfig(Config):
-    DEBUG = False
+    HOST = os.getenv("HOST", "0.0.0.0")
+    PORT = int(os.getenv("PORT", 5000))
+    DEBUG = os.getenv("DEBUG", "True").lower() == "true"
