@@ -3,7 +3,8 @@ from app.database import db
 from app.services import (
     fetch_tasks,
     create_task,
-    update_task
+    update_task,
+    delete_task
 )
 
 main_routes = Blueprint(
@@ -83,19 +84,16 @@ def edit_task(task_id):
 
     return task
 
+@main_routes.route("/tasks/<int:task_id>", methods=["DELETE"])
+def remove_task(task_id):
 
-@main_routes.route("/db-test")
-def db_test():
+    deleted = delete_task(task_id)
 
-    try:
-        db.session.execute(db.text("SELECT 1"))
-
+    if not deleted:
         return {
-            "message": "Database connection successful!"
-        }
+            "error": "Task not found"
+        }, 404
 
-    except Exception as e:
-
-        return {
-            "error": str(e)
-        }, 500
+    return {
+        "message": "Task deleted successfully"
+    }

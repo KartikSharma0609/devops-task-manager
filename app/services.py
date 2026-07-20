@@ -33,3 +33,16 @@ def update_task(task_id, title, status):
     db.session.commit()
 
     return task.to_dict()
+
+def delete_task(task_id):
+
+    task = Task.query.get(task_id)
+
+    if task is None:
+        return False
+
+    db.session.delete(task)
+
+    db.session.commit()
+
+    return True
