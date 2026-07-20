@@ -1,10 +1,8 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, request
 from app.database import db
 from app.services import (
     fetch_tasks,
-    create_new_task,
-    update_existing_task,
-    delete_existing_task
+    create_task
 )
 
 main_routes = Blueprint(
@@ -25,102 +23,33 @@ def home():
 @main_routes.route("/tasks", methods=["GET"])
 def get_tasks():
 
-    tasks = fetch_tasks()
-
-    return jsonify(tasks)
-
+    return fetch_tasks()
 
 @main_routes.route("/tasks", methods=["POST"])
 def add_task():
 
     data = request.get_json(silent=True)
 
-
-    if data is None:
-
-        return jsonify({
-            "error": "Request body is required"
-        }), 400
-
-
-    if "title" not in data:
-
-        return jsonify({
-            "error": "Title is required"
-        }), 400
-
-
-    task = create_new_task(
-    data["title"]
-    )
-
-
-    if task is None:
-
-        return jsonify({
-            "error": "Title cannot be empty"
-        }),400
-
-
-    return jsonify(task),201
-
-@main_routes.route("/tasks/<int:id>", methods=["PUT"])
-def update_task(id):
-
-    data = request.get_json(silent=True)
-
-
-    if data is None:
-
-        return jsonify({
-            "error":"Request body is required"
-        }),400
-
-
     if not data:
 
-        return jsonify({
-            "error":"No update data provided"
-        }),400
+        return {
+            "error": "Request body is required"
+        }, 400
 
+    title = data.get("title")
 
-    task = update_existing_task(
-        id,
-        data
-    )
+    if not title:
 
+        return {
+            "error": "Title is required"
+        }, 400
 
-    if task is False:
+    status = data.get("status", "pending")
 
-        return jsonify({
-            "error":"Task not found"
-        }),404
+    task = create_task(title, status)
 
+    return task, 201
 
-    if task is None:
-
-        return jsonify({
-            "error":"Invalid update data"
-        }),400
-
-
-    return jsonify(task)
-
-
-@main_routes.route("/tasks/<int:id>", methods=["DELETE"])
-def delete_task(id):
-
-    deleted = delete_existing_task(id)
-
-    if not deleted:
-
-        return jsonify({
-            "error": "Task not found"
-        }), 404
-
-    return jsonify({
-        "message": "Task deleted successfully"
-    }), 200
 
 @main_routes.route("/db-test")
 def db_test():
