@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-
+from app.database import db
 from app.services import (
     fetch_tasks,
     create_new_task,
@@ -121,3 +121,19 @@ def delete_task(id):
     return jsonify({
         "message": "Task deleted successfully"
     }), 200
+
+@main_routes.route("/db-test")
+def db_test():
+
+    try:
+        db.session.execute(db.text("SELECT 1"))
+
+        return {
+            "message": "Database connection successful!"
+        }
+
+    except Exception as e:
+
+        return {
+            "error": str(e)
+        }, 500
