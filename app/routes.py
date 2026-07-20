@@ -2,7 +2,8 @@ from flask import Blueprint, request
 from app.database import db
 from app.services import (
     fetch_tasks,
-    create_task
+    create_task,
+    update_task
 )
 
 main_routes = Blueprint(
@@ -49,6 +50,38 @@ def add_task():
     task = create_task(title, status)
 
     return task, 201
+
+@main_routes.route("/tasks/<int:task_id>", methods=["PUT"])
+def edit_task(task_id):
+
+    data = request.get_json(silent=True)
+
+    if not data:
+        return {
+            "error": "Request body is required"
+        }, 400
+
+    title = data.get("title")
+    status = data.get("status")
+
+    if not title:
+        return {
+            "error": "Title is required"
+        }, 400
+
+    if not status:
+        return {
+            "error": "Status is required"
+        }, 400
+
+    task = update_task(task_id, title, status)
+
+    if task is None:
+        return {
+            "error": "Task not found"
+        }, 404
+
+    return task
 
 
 @main_routes.route("/db-test")

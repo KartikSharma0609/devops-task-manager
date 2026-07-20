@@ -19,3 +19,17 @@ def create_task(title, status="pending"):
     db.session.commit()
 
     return task.to_dict()
+
+def update_task(task_id, title, status):
+
+    task = Task.query.get(task_id)
+
+    if task is None:
+        return None
+
+    task.title = title
+    task.status = status
+
+    db.session.commit()
+
+    return task.to_dict()
