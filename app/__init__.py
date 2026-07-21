@@ -1,5 +1,7 @@
 from flask import Flask
 
+from flask_migrate import Migrate
+
 from app.config import Config
 from app.database import db
 
@@ -11,7 +13,8 @@ def create_app():
     app.config.from_object(Config)
 
     db.init_app(app)
-    from app import models
+
+    migrate = Migrate(app, db)
 
     from app.routes import main_routes
 
