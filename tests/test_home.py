@@ -4,6 +4,4 @@ def test_home(client):
 
     assert response.status_code == 200
 
-    assert response.get_json() == {
-        "message": "DevOps Task Manager API is running"
-    }
+    assert response.get_json() == {"message": "DevOps Task Manager API is running"}

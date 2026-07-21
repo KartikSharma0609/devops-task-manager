@@ -6,10 +6,7 @@ def test_delete_task(client):
 
     with client.application.app_context():
 
-        task = Task(
-            title="Delete Me",
-            status="pending"
-        )
+        task = Task(title="Delete Me", status="pending")
 
         db.session.add(task)
         db.session.commit()
@@ -20,9 +17,7 @@ def test_delete_task(client):
 
     assert response.status_code == 200
 
-    assert response.get_json() == {
-        "message": "Task deleted successfully"
-    }
+    assert response.get_json() == {"message": "Task deleted successfully"}
 
     with client.application.app_context():
 
@@ -30,14 +25,11 @@ def test_delete_task(client):
 
         assert deleted_task is None
 
+
 def test_delete_non_existing_task(client):
 
     response = client.delete("/tasks/9999")
 
     assert response.status_code == 404
 
-    assert response.get_json() == {
-        "error": "Task not found"
-    }
-
-
+    assert response.get_json() == {"error": "Task not found"}

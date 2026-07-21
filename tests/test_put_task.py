@@ -6,10 +6,7 @@ def test_update_task(client):
 
     with client.application.app_context():
 
-        task = Task(
-            title="Learn Docker",
-            status="pending"
-        )
+        task = Task(title="Learn Docker", status="pending")
 
         db.session.add(task)
         db.session.commit()
@@ -18,10 +15,7 @@ def test_update_task(client):
 
     response = client.put(
         f"/tasks/{task_id}",
-        json={
-            "title": "Learn Docker Deeply",
-            "status": "completed"
-        }
+        json={"title": "Learn Docker Deeply", "status": "completed"},
     )
 
     assert response.status_code == 200
@@ -42,39 +36,25 @@ def test_update_task(client):
 def test_update_non_existing_task(client):
 
     response = client.put(
-        "/tasks/9999",
-        json={
-            "title": "Anything",
-            "status": "pending"
-        }
+        "/tasks/9999", json={"title": "Anything", "status": "pending"}
     )
 
     assert response.status_code == 404
 
-    assert response.get_json() == {
-        "error": "Task not found"
-    }
+    assert response.get_json() == {"error": "Task not found"}
 
 
 def test_update_with_empty_title(client):
 
     with client.application.app_context():
 
-        task = Task(
-            title="Docker",
-            status="pending"
-        )
+        task = Task(title="Docker", status="pending")
 
         db.session.add(task)
         db.session.commit()
 
         task_id = task.id
 
-    response = client.put(
-        f"/tasks/{task_id}",
-        json={
-            "title": ""
-        }
-    )
+    response = client.put(f"/tasks/{task_id}", json={"title": ""})
 
     assert response.status_code == 400

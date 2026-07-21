@@ -1,15 +1,9 @@
-from app.database import db
 from app.models import Task
 
 
 def test_create_task(client):
 
-    response = client.post(
-        "/tasks",
-        json={
-            "title": "Learn Terraform"
-        }
-    )
+    response = client.post("/tasks", json={"title": "Learn Terraform"})
 
     assert response.status_code == 201
 
@@ -32,47 +26,29 @@ def test_create_task(client):
 
 def test_create_task_without_title(client):
 
-    response = client.post(
-        "/tasks",
-        json={}
-    )
+    response = client.post("/tasks", json={})
 
     assert response.status_code == 400
 
-    assert response.get_json() == {
-        "error": "Request body is required"
-    }
+    assert response.get_json() == {"error": "Request body is required"}
+
 
 def test_create_task_with_empty_title(client):
 
-    response = client.post(
-        "/tasks",
-        json={
-            "title": ""
-        }
-    )
+    response = client.post("/tasks", json={"title": ""})
 
     assert response.status_code == 400
 
-    assert response.get_json() == {
-        "error": "Title is required"
-    }
+    assert response.get_json() == {"error": "Title is required"}
 
 
 def test_create_task_with_blank_title(client):
 
-    response = client.post(
-        "/tasks",
-        json={
-            "title": "     "
-        }
-    )
+    response = client.post("/tasks", json={"title": "     "})
 
     assert response.status_code == 400
 
-    assert response.get_json() == {
-        "error": "Title is required"
-    }
+    assert response.get_json() == {"error": "Title is required"}
 
 
 def test_create_task_without_json(client):
