@@ -22,7 +22,7 @@ def create_task(title, status="pending"):
 
 def update_task(task_id, title, status):
 
-    task = Task.query.get(task_id)
+    task = db.session.get(Task, task_id)
 
     if task is None:
         return None
@@ -36,7 +36,7 @@ def update_task(task_id, title, status):
 
 def delete_task(task_id):
 
-    task = Task.query.get(task_id)
+    task = db.session.get(Task, task_id)
 
     if task is None:
         return False
