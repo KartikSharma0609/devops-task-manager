@@ -1,5 +1,7 @@
 import os
+from dotenv import load_dotenv
 
+load_dotenv()
 
 class Config:
 
@@ -19,3 +21,13 @@ class Config:
     )
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+class TestingConfig(Config):
+
+    TESTING = True
+
+    SQLALCHEMY_DATABASE_URI = (
+        f"postgresql://{Config.DB_USER}:{Config.DB_PASSWORD}"
+        f"@{Config.DB_HOST}:{Config.DB_PORT}/"
+        f"{os.getenv('TEST_DB_NAME')}"
+    )

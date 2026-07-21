@@ -38,7 +38,7 @@ def add_task():
             "error": "Request body is required"
         }, 400
 
-    title = data.get("title")
+    title = data.get("title", "").strip()
 
     if not title:
 
