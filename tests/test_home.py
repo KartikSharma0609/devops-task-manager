@@ -1,6 +1,6 @@
 def test_home(client):
 
-    response = client.get("/")
+    response = client.get("/system/")
 
     assert response.status_code == 200
 

@@ -3,7 +3,9 @@ from app.models import Task
 
 def test_create_task(client):
 
-    response = client.post("/tasks", json={"title": "Learn Terraform"})
+    response = client.post(
+        "/tasks", json={"title": "Learn Terraform", "status": "pending"}
+    )
 
     assert response.status_code == 201
 
