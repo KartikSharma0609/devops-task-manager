@@ -3,6 +3,8 @@ from app.api import api
 from flask_migrate import Migrate
 from app.config import Config
 from app.database import db
+from flask_jwt_extended import JWTManager
+
 
 
 def create_app(config_class=Config):
@@ -16,5 +18,9 @@ def create_app(config_class=Config):
     Migrate(app, db)
 
     api.init_app(app)
+
+    jwt = JWTManager()
+
+    jwt.init_app(app)
 
     return app
