@@ -1,7 +1,7 @@
 from flask import request
 from app.services import fetch_tasks, create_task, update_task, delete_task
 from flask_restx import Namespace, Resource, fields, marshal
-
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 tasks_ns = Namespace(
     "tasks",
@@ -50,11 +50,13 @@ def validate_task_data():
 class TaskList(Resource):
 
     @tasks_ns.marshal_list_with(task_model)
+    @jwt_required()
     def get(self):
         return fetch_tasks()
 
 
     @tasks_ns.expect(task_input)
+    @jwt_required()
     def post(self):
         data, error, status_code = validate_task_data()
 
@@ -69,6 +71,7 @@ class TaskList(Resource):
 class Task(Resource):
 
     @tasks_ns.expect(task_input)
+    @jwt_required()
     def put(self, task_id):
 
         data, error, status_code = validate_task_data()
@@ -84,7 +87,7 @@ class Task(Resource):
         return marshal(task, task_model), 200
 
 
-
+    @jwt_required()
     def delete(self, task_id):
 
         deleted = delete_task(task_id)

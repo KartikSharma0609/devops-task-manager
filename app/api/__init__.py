@@ -1,12 +1,24 @@
 from flask_restx import Api
 from flask_restx import fields
 
+authorizations = {
+    "Bearer Auth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "Enter: Bearer <JWT Token>"
+    }
+}
+
 api = Api(
     title="DevOps Task Manager API",
     version="1.0",
     description="A REST API built with Flask, PostgreSQL, Docker and SQLAlchemy.",
-    doc="/docs"
+    doc="/docs",
+    authorizations=authorizations,
+    security="Bearer Auth"
 )
+
 
 from app.api.task_api import tasks_ns
 from app.api.system_api import system_ns
