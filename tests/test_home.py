@@ -1,6 +1,6 @@
 def test_home(client):
 
-    response = client.get("/system/")
+    response = client.get("/system", follow_redirects=True)
 
     assert response.status_code == 200
 
