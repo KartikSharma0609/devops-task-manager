@@ -2,7 +2,7 @@ from app.database import db
 from app.models import Task
 
 
-def test_delete_task(client):
+def test_delete_task(client, auth_headers):
 
     with client.application.app_context():
 
@@ -13,7 +13,7 @@ def test_delete_task(client):
 
         task_id = task.id
 
-    response = client.delete(f"/tasks/{task_id}")
+    response = client.delete(f"/tasks/{task_id}", headers=auth_headers)
 
     assert response.status_code == 200
 
@@ -26,9 +26,9 @@ def test_delete_task(client):
         assert deleted_task is None
 
 
-def test_delete_non_existing_task(client):
+def test_delete_non_existing_task(client, auth_headers):
 
-    response = client.delete("/tasks/9999")
+    response = client.delete("/tasks/9999", headers=auth_headers)
 
     assert response.status_code == 404
 

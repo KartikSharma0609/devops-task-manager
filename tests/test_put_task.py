@@ -2,7 +2,7 @@ from app.database import db
 from app.models import Task
 
 
-def test_update_task(client):
+def test_update_task(client, auth_headers):
 
     with client.application.app_context():
 
@@ -15,7 +15,8 @@ def test_update_task(client):
 
     response = client.put(
         f"/tasks/{task_id}",
-        json={"title": "Learn Docker Deeply", "status": "completed"},
+        json={"title": "Learn Docker Deeply", "status": "completed"}, 
+        headers=auth_headers
     )
 
     assert response.status_code == 200
@@ -33,10 +34,10 @@ def test_update_task(client):
         assert updated_task.status == "completed"
 
 
-def test_update_non_existing_task(client):
+def test_update_non_existing_task(client, auth_headers):
 
     response = client.put(
-        "/tasks/9999", json={"title": "Anything", "status": "pending"}
+        "/tasks/9999", json={"title": "Anything", "status": "pending"}, headers=auth_headers
     )
 
     assert response.status_code == 404
@@ -44,7 +45,7 @@ def test_update_non_existing_task(client):
     assert response.get_json() == {"error": "Task not found"}
 
 
-def test_update_with_empty_title(client):
+def test_update_with_empty_title(client, auth_headers):
 
     with client.application.app_context():
 
@@ -55,6 +56,6 @@ def test_update_with_empty_title(client):
 
         task_id = task.id
 
-    response = client.put(f"/tasks/{task_id}", json={"title": ""})
+    response = client.put(f"/tasks/{task_id}", json={"title": ""}, headers=auth_headers)
 
     assert response.status_code == 400

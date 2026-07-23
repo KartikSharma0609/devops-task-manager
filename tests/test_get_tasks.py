@@ -1,6 +1,6 @@
-def test_get_tasks(client):
+def test_get_tasks(client, auth_headers):
 
-    response = client.get("/tasks")
+    response = client.get("/tasks", headers=auth_headers)
 
     assert response.status_code == 200
 
