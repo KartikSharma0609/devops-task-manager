@@ -1,12 +1,14 @@
 from flask_restx import Api
-from flask_restx import fields
+from app.api.task_api import tasks_ns
+from app.api.system_api import system_ns
+from app.api.auth_api import auth_ns
 
 authorizations = {
     "Bearer Auth": {
         "type": "apiKey",
         "in": "header",
         "name": "Authorization",
-        "description": "Enter: Bearer <JWT Token>"
+        "description": "Enter: Bearer <JWT Token>",
     }
 }
 
@@ -16,13 +18,8 @@ api = Api(
     description="A REST API built with Flask, PostgreSQL, Docker and SQLAlchemy.",
     doc="/docs",
     authorizations=authorizations,
-    security="Bearer Auth"
+    security="Bearer Auth",
 )
-
-
-from app.api.task_api import tasks_ns
-from app.api.system_api import system_ns
-from app.api.auth_api import auth_ns
 
 
 api.add_namespace(system_ns)

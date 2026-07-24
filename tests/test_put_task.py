@@ -15,8 +15,8 @@ def test_update_task(client, auth_headers):
 
     response = client.put(
         f"/tasks/{task_id}",
-        json={"title": "Learn Docker Deeply", "status": "completed"}, 
-        headers=auth_headers
+        json={"title": "Learn Docker Deeply", "status": "completed"},
+        headers=auth_headers,
     )
 
     assert response.status_code == 200
@@ -37,7 +37,9 @@ def test_update_task(client, auth_headers):
 def test_update_non_existing_task(client, auth_headers):
 
     response = client.put(
-        "/tasks/9999", json={"title": "Anything", "status": "pending"}, headers=auth_headers
+        "/tasks/9999",
+        json={"title": "Anything", "status": "pending"},
+        headers=auth_headers,
     )
 
     assert response.status_code == 404

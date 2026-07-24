@@ -6,7 +6,6 @@ from app.database import db
 from flask_jwt_extended import JWTManager
 
 
-
 def create_app(config_class=Config):
 
     app = Flask(__name__)
