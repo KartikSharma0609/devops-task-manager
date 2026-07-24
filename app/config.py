@@ -33,4 +33,3 @@ class TestingConfig(Config):
         f"@{Config.DB_HOST}:{Config.DB_PORT}/"
         f"{os.getenv('TEST_DB_NAME')}"
     )
-

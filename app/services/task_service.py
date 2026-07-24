@@ -2,16 +2,16 @@ from app.models import Task
 from app.database import db
 
 
-def fetch_tasks():
+def fetch_tasks(user_id):
 
-    tasks = Task.query.all()
+    tasks = Task.query.filter_by(user_id=user_id).all()
 
     return [task.to_dict() for task in tasks]
 
 
-def create_task(title, status="pending"):
+def create_task(user_id, title, status="pending"):
 
-    task = Task(title=title, status=status)
+    task = Task(title=title, status=status, user_id=user_id)
 
     db.session.add(task)
 
@@ -20,9 +20,9 @@ def create_task(title, status="pending"):
     return task.to_dict()
 
 
-def update_task(task_id, title, status):
+def update_task(user_id, task_id, title, status):
 
-    task = db.session.get(Task, task_id)
+    task = Task.query.filter_by(id=task_id, user_id=user_id).first()
 
     if task is None:
         return None
@@ -35,9 +35,9 @@ def update_task(task_id, title, status):
     return task.to_dict()
 
 
-def delete_task(task_id):
+def delete_task(user_id, task_id):
 
-    task = db.session.get(Task, task_id)
+    task = Task.query.filter_by(id=task_id, user_id=user_id).first()
 
     if task is None:
         return False

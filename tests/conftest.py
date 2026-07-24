@@ -3,6 +3,8 @@ import pytest
 from app import create_app
 from app.config import TestingConfig
 from app.database import db
+from app.models.user import User
+from app.models.task import Task
 from flask_jwt_extended import create_access_token
 
 
@@ -25,6 +27,15 @@ def app():
     with app.app_context():
 
         db.create_all()
+
+        test_user = User(
+            id=1,
+            username="testuser",
+            email="test@example.com",
+            password_hash="fakehash"
+        )
+        db.session.add(test_user)
+        db.session.commit()
 
         yield app
 

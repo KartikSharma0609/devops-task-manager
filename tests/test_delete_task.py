@@ -6,7 +6,7 @@ def test_delete_task(client, auth_headers):
 
     with client.application.app_context():
 
-        task = Task(title="Delete Me", status="pending")
+        task = Task(title="Delete Me", status="pending", user_id=1)
 
         db.session.add(task)
         db.session.commit()

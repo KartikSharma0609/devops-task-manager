@@ -52,18 +52,20 @@ class TaskList(Resource):
     @tasks_ns.marshal_list_with(task_model)
     @jwt_required()
     def get(self):
-        return fetch_tasks()
+        user_id=int(get_jwt_identity())
+        return fetch_tasks(user_id=user_id)
 
 
     @tasks_ns.expect(task_input)
     @jwt_required()
     def post(self):
+        user_id=int(get_jwt_identity())
         data, error, status_code = validate_task_data()
 
         if error:
             return error, status_code
 
-        new_task=create_task(data["title"], data["status"])
+        new_task=create_task(user_id, data["title"], data["status"])
         return marshal(new_task, task_model), 201
 
 
@@ -73,13 +75,13 @@ class Task(Resource):
     @tasks_ns.expect(task_input)
     @jwt_required()
     def put(self, task_id):
-
+        user_id=int(get_jwt_identity())
         data, error, status_code = validate_task_data()
 
         if error:
             return error, status_code
 
-        task = update_task(task_id, data["title"], data["status"])
+        task = update_task(user_id, task_id, data["title"], data["status"])
 
         if task is None:
             return {"error": "Task not found"}, 404
@@ -89,8 +91,8 @@ class Task(Resource):
 
     @jwt_required()
     def delete(self, task_id):
-
-        deleted = delete_task(task_id)
+        user_id=int(get_jwt_identity())
+        deleted = delete_task(user_id, task_id)
 
         if not deleted:
             return {"error": "Task not found"}, 404

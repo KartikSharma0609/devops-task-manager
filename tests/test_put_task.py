@@ -6,7 +6,7 @@ def test_update_task(client, auth_headers):
 
     with client.application.app_context():
 
-        task = Task(title="Learn Docker", status="pending")
+        task = Task(title="Learn Docker", status="pending", user_id=1)
 
         db.session.add(task)
         db.session.commit()
@@ -49,7 +49,7 @@ def test_update_with_empty_title(client, auth_headers):
 
     with client.application.app_context():
 
-        task = Task(title="Docker", status="pending")
+        task = Task(title="Docker", status="pending", user_id=1)
 
         db.session.add(task)
         db.session.commit()
