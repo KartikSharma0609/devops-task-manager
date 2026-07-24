@@ -16,7 +16,7 @@ class Config:
     DB_USER = os.getenv("DB_USER")
     DB_PASSWORD = os.getenv("DB_PASSWORD")
 
-    JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+    JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "jwtkey123")
 
     SQLALCHEMY_DATABASE_URI = (
         f"postgresql://{DB_USER}:{DB_PASSWORD}" f"@{DB_HOST}:{DB_PORT}/{DB_NAME}"
@@ -28,7 +28,6 @@ class Config:
 class TestingConfig(Config):
 
     TESTING = True
-
     SQLALCHEMY_DATABASE_URI = (
         f"postgresql://{Config.DB_USER}:{Config.DB_PASSWORD}"
         f"@{Config.DB_HOST}:{Config.DB_PORT}/"
