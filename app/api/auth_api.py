@@ -1,6 +1,7 @@
 from flask import request
-from flask_restx import Namespace, Resource, fields
-from flask_jwt_extended import create_access_token
+from app.models.user import User
+from flask_restx import Namespace, Resource, fields, abort
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
 from app.services.auth_service import register_user, login_user
 
@@ -48,12 +49,16 @@ class Register(Resource):
         password = data.get("password", "")
 
         if not username or not email or not password:
-            return {"message": "All fields are required"}, 400
+            abort(400, message="All fields are required")
+
+        existing_username = User.query.filter_by(username=username).first()
+        if existing_username:
+            abort(409, message="Username already exists")
 
         user = register_user(username, email, password)
 
         if user is None:
-            return {"message": "Email already exists"}, 409
+            abort(409, message="Email already exists")
 
         return user, 201
 
@@ -82,3 +87,25 @@ class Login(Resource):
             "access_token": access_token,
             "user": {"id": user.id, "username": user.username, "email": user.email},
         }
+
+
+@auth_ns.route("/me")
+class UserProfile(Resource):
+    
+    @auth_ns.doc(security="Bearer") # Adds lock icon in Swagger UI
+    @jwt_required()
+    def get(self):
+        """Get the current logged-in user's profile."""
+        # get_jwt_identity() returns the string we passed to create_access_token()
+        current_user_id = get_jwt_identity() 
+        
+        user = User.query.get(current_user_id)
+        
+        if not user:
+            abort(404, message="User not found")
+            
+        return {
+            "id": user.id, 
+            "username": user.username, 
+            "email": user.email
+        }, 200

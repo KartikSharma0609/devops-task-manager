@@ -1,12 +1,12 @@
 from app.database import db
 from app.models import Task
-
+from app.models import User
 
 def test_delete_task(client, auth_headers):
 
     with client.application.app_context():
-
-        task = Task(title="Delete Me", status="pending", user_id=1)
+        user = User.query.first()
+        task = Task(title="Delete Me", status="pending", user_id=user.id)
 
         db.session.add(task)
         db.session.commit()
