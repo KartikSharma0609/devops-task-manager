@@ -89,10 +89,9 @@ class Login(Resource):
         }
 
 
-@auth_ns.route("/me")
+@auth_ns.route("/me", doc={"security": "Bearer Auth"})
 class UserProfile(Resource):
     
-    @auth_ns.doc(security="Bearer") # Adds lock icon in Swagger UI
     @jwt_required()
     def get(self):
         """Get the current logged-in user's profile."""
