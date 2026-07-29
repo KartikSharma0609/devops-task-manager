@@ -4,9 +4,12 @@ from flask_migrate import Migrate
 from app.config import Config
 from app.database import db
 from flask_jwt_extended import JWTManager
+from app.utils.logging_config import configure_logging
 
 
 def create_app(config_class=Config):
+
+    configure_logging()
 
     app = Flask(__name__)
 
