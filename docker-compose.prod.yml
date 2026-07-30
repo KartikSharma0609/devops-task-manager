@@ -38,6 +38,21 @@ services:
       timeout: 5s
       retries: 3
       start_period: 20s
+    read_only: true
+    tmpfs:
+      - /tmp
+    volumes:
+      - type: tmpfs
+        target: /home/appuser/.gunicorn
+        tmpfs:
+          mode: 0777
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 512m
+    cpus: "1.0"
+
 
   nginx:
     image: nginx:latest

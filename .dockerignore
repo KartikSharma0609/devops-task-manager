@@ -12,6 +12,7 @@ __pycache__/
 # Virtual environments
 venv/
 .venv/
+*.lock
 
 # Testing
 .pytest_cache/
