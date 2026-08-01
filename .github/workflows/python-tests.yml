@@ -42,8 +42,8 @@ jobs:
       DB_NAME: taskdb_test
       DB_USER: postgres
       DB_PASSWORD: postgres123
-
       TEST_DB_NAME: taskdb_test
+      JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
 
     steps:
 
@@ -65,7 +65,5 @@ jobs:
           flask db upgrade
 
       - name: Run tests
-        env:
-          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
         run: |
           pytest
