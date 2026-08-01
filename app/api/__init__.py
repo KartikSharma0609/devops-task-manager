@@ -22,7 +22,7 @@ api = Api(
     security="Bearer Auth",
 )
 
-api.add_namespace(root_ns)
+api.add_namespace(root_ns, path="")
 api.add_namespace(system_ns)
 api.add_namespace(tasks_ns)
 api.add_namespace(auth_ns)

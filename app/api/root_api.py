@@ -1,6 +1,6 @@
 from flask_restx import Namespace, Resource
 
-root_ns = Namespace("root", description="Root")
+root_ns = Namespace("", description="Root")
 
 
 @root_ns.route("/")
