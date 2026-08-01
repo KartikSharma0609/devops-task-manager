@@ -15,6 +15,9 @@ def create_app(config_class=Config):
 
     app.config.from_object(config_class)
 
+    if not app.config["JWT_SECRET_KEY"]:
+        raise RuntimeError("JWT_SECRET_KEY environment variable is required.")
+
     db.init_app(app)
 
     Migrate(app, db)

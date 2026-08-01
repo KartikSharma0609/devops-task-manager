@@ -65,5 +65,7 @@ jobs:
           flask db upgrade
 
       - name: Run tests
+         env:
+           JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
         run: |
           pytest
