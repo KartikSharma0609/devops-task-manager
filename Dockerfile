@@ -1,4 +1,4 @@
-FROM python:3.13-slim
+FROM python:3.13-slim-bookworm
 
 LABEL org.opencontainers.image.title="DevOps Task Manager"
 LABEL org.opencontainers.image.description="Flask Task Manager API"
@@ -34,6 +34,9 @@ RUN chown -R appuser:appgroup /app
 USER appuser
 
 EXPOSE 5000
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+  CMD curl -f http://localhost:5000/system/health || exit 1
 
 CMD [\
   "gunicorn",\
