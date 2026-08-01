@@ -29,6 +29,8 @@ RUN groupadd -r appgroup && \
 
 COPY . .
 
+RUN chmod +x start.sh
+
 RUN chown -R appuser:appgroup /app
 
 USER appuser
@@ -38,13 +40,4 @@ EXPOSE 5000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
   CMD curl -f http://localhost:5000/system/health || exit 1
 
-CMD [\
-  "gunicorn",\
-  "--bind", "0.0.0.0:5000",\
-  "--workers", "2",\
-  "--threads", "2",\
-  "--timeout", "60",\
-  "--access-logfile", "-",\
-  "--error-logfile", "-",\
-  "app:create_app()"\
-]
+CMD ["./start.sh"]
