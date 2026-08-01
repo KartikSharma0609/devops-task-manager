@@ -1,4 +1,5 @@
 from flask_restx import Api
+from app.api.root_api import root_ns
 from app.api.task_api import tasks_ns
 from app.api.system_api import system_ns
 from app.api.auth_api import auth_ns
@@ -21,7 +22,7 @@ api = Api(
     security="Bearer Auth",
 )
 
-
+api.add_namespace(root_ns)
 api.add_namespace(system_ns)
 api.add_namespace(tasks_ns)
 api.add_namespace(auth_ns)
