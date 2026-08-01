@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify
 from app.api import api
 from flask_migrate import Migrate
 from app.config import Config
@@ -21,6 +21,16 @@ def create_app(config_class=Config):
     db.init_app(app)
 
     Migrate(app, db)
+
+    @app.route("/", methods=["GET"])
+    def root_index():
+        return jsonify({
+            "name": "DevOps Task Manager API",
+            "version": "1.0.0",
+            "status": "running",
+            "documentation": "/docs",
+            "health": "/system/health"
+        }), 200
 
     api.init_app(app)
 
