@@ -8,7 +8,7 @@ class Config:
 
     HOST = os.getenv("HOST", "0.0.0.0")
     PORT = int(os.getenv("PORT", 5000))
-    DEBUG = os.getenv("DEBUG", "True").lower() == "true"
+    DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
     DB_HOST = os.getenv("DB_HOST")
     DB_PORT = os.getenv("DB_PORT")
@@ -16,11 +16,20 @@ class Config:
     DB_USER = os.getenv("DB_USER")
     DB_PASSWORD = os.getenv("DB_PASSWORD")
 
-    JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "jwtkey123")
+    JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
 
-    SQLALCHEMY_DATABASE_URI = (
-        f"postgresql://{DB_USER}:{DB_PASSWORD}" f"@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-    )
+    if not JWT_SECRET_KEY:
+        raise RuntimeError("JWT_SECRET_KEY environment variable is required.")
+
+    DATABASE_URL = os.getenv("DATABASE_URL")
+
+    if DATABASE_URL:
+        SQLALCHEMY_DATABASE_URI = DATABASE_URL
+    else:
+        SQLALCHEMY_DATABASE_URI = (
+            f"postgresql://{DB_USER}:{DB_PASSWORD}"
+            f"@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+        )
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
