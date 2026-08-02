@@ -1,78 +1,144 @@
 # 🚀 DevOps Task Manager API
 
-A production-ready RESTful Task Management API built with **Flask**, **PostgreSQL**, **SQLAlchemy**, and **JWT Authentication**, following modern DevOps practices including **Docker**, **GitHub Actions CI**, **Alembic database migrations**, and **Render deployment**.
+A **production-ready REST API** built using **Flask**, **PostgreSQL**, and **SQLAlchemy**, following modern DevOps practices including **Docker**, **GitHub Actions CI**, **Alembic database migrations**, **JWT Authentication**, **Gunicorn**, **Nginx**, and **Render deployment**.
 
-This project demonstrates how to build, test, containerize, and deploy a secure backend application using industry-standard tools and best practices.
+The project demonstrates the complete backend development lifecycle—from designing secure REST APIs to containerization, automated testing, CI, and production deployment.
+
+---
+
+# 🌐 Live Demo
+
+**API Base URL**
+
+```
+https://devops-task-manager-7n2q.onrender.com
+```
+
+**Swagger Documentation**
+
+```
+https://devops-task-manager-7n2q.onrender.com/docs
+```
+
+---
+
+# 📸 Project Screenshots
+
+> Replace these placeholders with actual screenshots.
+
+### Swagger UI
+
+```
+docs/images/swagger.png
+```
+
+### GitHub Actions Pipeline
+
+```
+docs/images/github-actions.png
+```
+
+### Render Deployment
+
+```
+docs/images/render-dashboard.png
+```
+
+### Docker Containers
+
+```
+docs/images/docker-containers-1.png
+docs/images/docker-containers-2.png
+```
 
 ---
 
 # ✨ Features
 
-* RESTful CRUD operations for task management
-* User authentication using JWT
-* User-specific task access
-* PostgreSQL database with SQLAlchemy ORM
-* Database migrations using Alembic
-* Swagger/OpenAPI documentation with Flask-RESTX
-* Dockerized application
-* Separate Development and Production Docker Compose configurations
-* Gunicorn production server
-* Nginx reverse proxy configuration
-* Health check endpoints
-* Structured application logging
-* GitHub Actions Continuous Integration
-* Production deployment on Render
-* Secure Docker image
+## Backend
 
-  * Non-root user
-  * Read-only filesystem
-  * Dropped Linux capabilities
-  * No New Privileges
+* RESTful API built with Flask-RESTX
+* JWT Authentication
+* User Registration & Login
+* User-specific task management
+* Complete CRUD operations
+* SQLAlchemy ORM
+* Alembic database migrations
+* Swagger/OpenAPI documentation
+
+## Database
+
+* PostgreSQL
+* SQLAlchemy ORM
+* Database migrations with Alembic
+
+## DevOps
+
+* Docker
+* Docker Compose (Development & Production)
+* Gunicorn WSGI Server
+* Nginx Reverse Proxy
+* GitHub Actions CI Pipeline
+* Production deployment on Render
+
+## Monitoring
+
+* Health Check endpoint
+* Structured logging
+* Database connectivity check
+
+## Security
+
+* JWT Authentication
+* Protected endpoints
+* Non-root Docker user
+* Read-only container filesystem
+* Dropped Linux capabilities
+* No New Privileges
+* Environment-based configuration
 
 ---
 
 # 🛠 Tech Stack
 
-## Backend
-
-* Python 3.13
-* Flask
-* Flask-RESTX
-* Flask-JWT-Extended
-* SQLAlchemy
-* Alembic
-* Gunicorn
-
-## Database
-
-* PostgreSQL
-
-## DevOps
-
-* Docker
-* Docker Compose
-* GitHub Actions
-* Render
-* Nginx
+| Category           | Technologies           |
+| ------------------ | ---------------------- |
+| Language           | Python 3.13            |
+| Framework          | Flask, Flask-RESTX     |
+| Database           | PostgreSQL             |
+| ORM                | SQLAlchemy             |
+| Authentication     | Flask-JWT-Extended     |
+| Database Migration | Alembic                |
+| Web Server         | Gunicorn               |
+| Reverse Proxy      | Nginx                  |
+| Containerization   | Docker, Docker Compose |
+| CI                 | GitHub Actions         |
+| Deployment         | Render                 |
+| Documentation      | Swagger/OpenAPI        |
 
 ---
 
-# 🏗 Architecture
+# 🏗 System Architecture
 
 ```
-                Client
-                   │
-                   ▼
-              Nginx (Production)
-                   │
-                   ▼
-          Flask REST API (Gunicorn)
-                   │
-                   ▼
-            SQLAlchemy ORM
-                   │
-                   ▼
-              PostgreSQL
+                    Client
+                       │
+                       ▼
+                 Nginx (Production)
+                       │
+                       ▼
+               Gunicorn WSGI Server
+                       │
+                       ▼
+                Flask REST API
+                       │
+             ┌─────────┴─────────┐
+             │                   │
+             ▼                   ▼
+       JWT Authentication   SQLAlchemy ORM
+                                   │
+                                   ▼
+                              PostgreSQL
 ```
 
 ---
@@ -105,73 +171,83 @@ This project demonstrates how to build, test, containerize, and deploy a secure 
 
 # 🔐 Authentication
 
-Authentication is implemented using **JWT (JSON Web Tokens).**
+Protected endpoints require a JWT access token.
 
-Protected endpoints require the following header:
+Example header:
 
 ```
 Authorization: Bearer <JWT_TOKEN>
 ```
 
+Authentication flow:
+
+```
+Register
+
+↓
+
+Login
+
+↓
+
+Receive JWT
+
+↓
+
+Access Protected Endpoints
+```
+
 ---
 
-# 📚 API Documentation
+# 📚 API Endpoints
 
-Interactive Swagger documentation is available at:
+## Authentication
+
+| Method | Endpoint       |
+| ------ | -------------- |
+| POST   | /auth/register |
+| POST   | /auth/login    |
+
+## Tasks
+
+| Method | Endpoint    |
+| ------ | ----------- |
+| GET    | /tasks      |
+| POST   | /tasks      |
+| PUT    | /tasks/{id} |
+| DELETE | /tasks/{id} |
+
+## System
+
+| Method | Endpoint        |
+| ------ | --------------- |
+| GET    | /system         |
+| GET    | /system/health  |
+| GET    | /system/db-test |
+
+Interactive documentation:
 
 ```
 /docs
 ```
 
-Example:
-
-```
-http://localhost:5000/docs
-```
-
-or
-
-```
-https://devops-task-manager-7n2q.onrender.com/docs
-```
-
 ---
 
-# ❤️ Health Check
+# 🚀 Local Development
 
-The application exposes health endpoints for monitoring.
-
-```
-GET /system/health
-```
-
-Response:
-
-```json
-{
-  "status": "healthy"
-  "database": "connected"
-}
-```
-
----
-
-# 🚀 Running Locally
-
-## Clone the repository
+## Clone Repository
 
 ```bash
 git clone https://github.com/KartikSharma0609/devops-task-manager.git
+
 cd devops-task-manager
 ```
 
-## Create a virtual environment
+## Create Virtual Environment
 
 ```bash
 python -m venv venv
 ```
-
-## Activate
 
 Linux/macOS
 
@@ -185,23 +261,23 @@ Windows
 venv\Scripts\activate
 ```
 
-## Install dependencies
+## Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Configure environment variables
+## Configure Environment Variables
 
-Create a `.env` file containing your database credentials and JWT secret.
+Create a `.env` file.
 
-## Run migrations
+## Apply Database Migrations
 
 ```bash
 flask db upgrade
 ```
 
-## Start the application
+## Start Application
 
 ```bash
 python app.py
@@ -209,7 +285,7 @@ python app.py
 
 ---
 
-# 🐳 Running with Docker
+# 🐳 Docker
 
 Development
 
@@ -225,16 +301,42 @@ docker compose -f docker-compose.prod.yml up --build -d
 
 ---
 
-# ⚙ Continuous Integration
+# ⚙ CI/CD Pipeline
 
 GitHub Actions automatically performs:
 
-* Dependency installation
-* PostgreSQL service startup
-* Database migrations
-* Automated test execution
+* Checkout repository
+* Install dependencies
+* Start PostgreSQL service
+* Apply Alembic migrations
+* Execute automated tests
+* Validate every push & pull request
 
-Every push and pull request is validated before merging.
+Pipeline:
+
+```
+Git Push
+
+↓
+
+GitHub Actions
+
+↓
+
+Install Dependencies
+
+↓
+
+Run Database Migrations
+
+↓
+
+Execute Tests
+
+↓
+
+Build Successful ✅
+```
 
 ---
 
@@ -248,52 +350,77 @@ Deployment includes:
 * PostgreSQL database
 * Gunicorn
 * Automatic database migrations
-* Health checks
-* Production environment variables
+* Health monitoring
+* Environment variable management
+
+---
+
+# ❤️ Health Monitoring
+
+Health endpoint:
+
+```
+GET /system/health
+```
+
+Example Response
+
+```json
+{
+    "status": "healthy"
+    "database": "connected"
+}
+```
 
 ---
 
 # 🧪 Testing
 
-Run the complete test suite:
+Run the test suite:
 
 ```bash
 pytest
 ```
 
-Current test coverage includes:
+Current coverage includes:
 
 * Authentication
-* Task CRUD operations
-* Health endpoints
-* API functionality
+* Task CRUD
+* Protected endpoints
+* Database connectivity
+* Health checks
 
 ---
 
-# 🔒 Security
+# 🔒 Security Highlights
 
 * JWT Authentication
-* Password hashing
-* User-specific resource authorization
+* User-specific authorization
+* Protected API endpoints
+* Secure password hashing
+* Environment-based secrets
 * Non-root Docker user
-* Read-only container filesystem
+* Read-only production container
 * Dropped Linux capabilities
-* Health monitoring
 * Structured logging
+* Health monitoring
 
 ---
 
-# 🚧 Future Improvements
+# 🚧 Future Enhancements
 
-* API Versioning
+* API Versioning (`/api/v1`)
+* Refresh JWT Tokens
 * Redis Caching
 * Role-Based Access Control (RBAC)
 * Rate Limiting
-* Refresh Tokens
+* Prometheus Monitoring
+* Grafana Dashboards
 * Kubernetes Deployment
 * Terraform Infrastructure
-* Prometheus & Grafana Monitoring
 * Jenkins CI/CD Pipeline
+* AWS EC2 Deployment
+* Helm Charts
 
 ---
 
@@ -303,9 +430,11 @@ Current test coverage includes:
 
 Aspiring DevOps Engineer
 
-* GitHub: *Add your GitHub profile*
-* LinkedIn: *Add your LinkedIn profile*
+* GitHub: https://github.com/KartikSharma0609/devops-task-manager
+* LinkedIn: www.linkedin.com/in/kartik-sharma-54328437a
 
 ---
 
-# ⭐ If you found this project useful, consider giving it a star!
+# ⭐ Support
+
+If you found this project useful, consider giving it a **⭐ Star** on GitHub.
