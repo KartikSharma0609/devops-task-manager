@@ -25,31 +25,17 @@ https://devops-task-manager-7n2q.onrender.com/docs
 # 📸 Project Screenshots
 
 ### Swagger UI
-
-```
-docs/images/swagger.png
-```
+![Swagger UI Documentation](docs/images/swagger.png)
 
 ### GitHub Actions Pipeline
-
-```
-docs/images/github-actions.png
-```
+![GitHub Actions Pipeline](docs/images/github-actions.png)
 
 ### Render Deployment
-
-```
-docs/images/render-dashboard.png
-```
+![Render Deployment Dashboard](docs/images/render-dashboard.png)
 
 ### Docker Containers
-
-```
-docs/images/docker-containers-1.png
-docs/images/docker-containers-2.png
-```
-
----
+![Docker Containers Part 1](docs/images/docker-containers-1.png)
+![Docker Containers Part 2](docs/images/docker-containers-2.png)
 
 # ✨ Features
 
