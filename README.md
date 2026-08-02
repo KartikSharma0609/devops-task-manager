@@ -24,8 +24,6 @@ https://devops-task-manager-7n2q.onrender.com/docs
 
 # 📸 Project Screenshots
 
-> Replace these placeholders with actual screenshots.
-
 ### Swagger UI
 
 ```
