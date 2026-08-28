@@ -62,7 +62,7 @@ jobs:
 
           aws ssm wait command-executed \
             --instance-id "$INSTANCE_ID" \
-            --command-id "$COMMAND_ID"
+            --command-id "$COMMAND_ID" || true
 
           echo "Deployment result:"
 
@@ -75,3 +75,14 @@ jobs:
               Error: StandardErrorContent
             }' \
             --output json
+
+          STATUS=$(aws ssm get-command-invocation \
+            --instance-id "$INSTANCE_ID" \
+            --command-id "$COMMAND_ID" \
+            --query 'Status' \
+            --output text)
+
+          if [ "$STATUS" != "Success" ]; then
+            echo "Deployment failed with status: $STATUS"
+            exit 1
+          fi
