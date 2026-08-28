@@ -15,30 +15,50 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    permissions:
+      id-token: write
+      contents: read
+
     steps:
 
-      - name: Deploy to EC2
-        uses: appleboy/ssh-action@v1.2.0
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            set -e
+          aws-region: ap-south-1
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
 
-            cd ~/devops-task-manager
+      - name: Deploy through AWS Systems Manager
+        env:
+          INSTANCE_ID: ${{ secrets.EC2_INSTANCE_ID }}
+        run: |
+          COMMAND_ID=$(aws ssm send-command \
+            --instance-ids "$INSTANCE_ID" \
+            --document-name "AWS-RunShellScript" \
+            --parameters 'commands=[
+              "set -e",
+              "cd /home/ec2-user/devops-task-manager",
+              "echo Pulling latest code...",
+              "git pull origin main",
+              "echo Deploying application...",
+              "docker compose -f docker-compose.prod.yml up -d --build",
+              "echo Cleaning unused Docker images...",
+              "docker image prune -f",
+              "echo Deployment status:",
+              "docker compose -f docker-compose.prod.yml ps",
+              "echo Checking application health...",
+              "curl -f http://localhost/system/health"
+            ]' \
+            --query "Command.CommandId" \
+            --output text)
 
-            echo "Pulling latest code..."
-            git pull origin main
+          echo "SSM Command ID: $COMMAND_ID"
 
-            echo "Deploying application..."
-            docker compose -f docker-compose.prod.yml up -d --build
+          aws ssm wait command-executed \
+            --instance-id "$INSTANCE_ID" \
+            --command-id "$COMMAND_ID"
 
-            echo "Cleaning unused Docker images..."
-            docker image prune -f
-
-            echo "Deployment status:"
-            docker compose -f docker-compose.prod.yml ps
-
-            echo "Checking application health..."
-            curl -f http://localhost/system/health
+          aws ssm get-command-invocation \
+            --instance-id "$INSTANCE_ID" \
+            --command-id "$COMMAND_ID" \
+            --query '{Status:Status,Output:StandardOutputContent,Error:StandardErrorContent}' \
+            --output json
