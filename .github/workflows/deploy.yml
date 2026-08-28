@@ -42,6 +42,7 @@ jobs:
             --parameters 'commands=[
               "set -e",
               "cd /home/ec2-user/devops-task-manager",
+              "git config --global --add safe.directory /home/ec2-user/devops-task-manager",
               "echo Pulling latest code...",
               "git pull origin main",
               "echo Deploying application...",
