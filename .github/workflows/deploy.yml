@@ -41,6 +41,7 @@ jobs:
             --document-name "AWS-RunShellScript" \
             --parameters 'commands=[
               "set -e",
+              "export HOME=/home/ec2-user",
               "cd /home/ec2-user/devops-task-manager",
               "git config --global --add safe.directory /home/ec2-user/devops-task-manager",
               "echo Pulling latest code...",
