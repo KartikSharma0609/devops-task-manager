@@ -24,13 +24,18 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-region: ap-south-1
           role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ap-south-1
 
       - name: Deploy through AWS Systems Manager
         env:
           INSTANCE_ID: ${{ secrets.EC2_INSTANCE_ID }}
         run: |
+
+          set -e
+
+          echo "Sending deployment command to EC2..."
+
           COMMAND_ID=$(aws ssm send-command \
             --instance-ids "$INSTANCE_ID" \
             --document-name "AWS-RunShellScript" \
@@ -53,12 +58,20 @@ jobs:
 
           echo "SSM Command ID: $COMMAND_ID"
 
+          echo "Waiting for deployment..."
+
           aws ssm wait command-executed \
             --instance-id "$INSTANCE_ID" \
             --command-id "$COMMAND_ID"
 
+          echo "Deployment result:"
+
           aws ssm get-command-invocation \
             --instance-id "$INSTANCE_ID" \
             --command-id "$COMMAND_ID" \
-            --query '{Status:Status,Output:StandardOutputContent,Error:StandardErrorContent}' \
+            --query '{
+              Status: Status,
+              Output: StandardOutputContent,
+              Error: StandardErrorContent
+            }' \
             --output json
