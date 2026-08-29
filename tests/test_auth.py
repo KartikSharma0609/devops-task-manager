@@ -1,6 +1,5 @@
 import pytest
 from app.models.user import User
-from app.database import db
 
 # =====================================================================
 # 1. USER REGISTRATION TESTS
