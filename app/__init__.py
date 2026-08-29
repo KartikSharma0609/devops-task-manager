@@ -24,13 +24,18 @@ def create_app(config_class=Config):
 
     @app.route("/", methods=["GET"])
     def root_index():
-        return jsonify({
-            "name": "DevOps Task Manager API",
-            "version": "1.0.0",
-            "status": "running",
-            "documentation": "/docs",
-            "health": "/system/health"
-        }), 200
+        return (
+            jsonify(
+                {
+                    "name": "DevOps Task Manager API",
+                    "version": "1.0.0",
+                    "status": "running",
+                    "documentation": "/docs",
+                    "health": "/system/health",
+                }
+            ),
+            200,
+        )
 
     api.init_app(app)
 

@@ -7,7 +7,6 @@ from app.utils.logger import get_logger
 logger = get_logger(__name__)
 
 
-
 tasks_ns = Namespace("tasks", description="Task operations")
 
 

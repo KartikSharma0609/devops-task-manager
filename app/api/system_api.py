@@ -22,6 +22,7 @@ class DatabaseTest(Resource):
 
         return {"message": "Database connection successful!"}
 
+
 @system_ns.route("/health")
 class Health(Resource):
 
@@ -30,14 +31,8 @@ class Health(Resource):
         try:
             db.session.execute(text("SELECT 1"))
 
-            return {
-                "status": "healthy",
-                "database": "connected"
-            }
+            return {"status": "healthy", "database": "connected"}
 
         except Exception:
 
-            return {
-                "status": "unhealthy",
-                "database": "disconnected"
-            }, 500
+            return {"status": "unhealthy", "database": "disconnected"}, 500

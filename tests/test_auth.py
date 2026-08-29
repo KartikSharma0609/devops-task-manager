@@ -6,12 +6,13 @@ from app.database import db
 # 1. USER REGISTRATION TESTS
 # =====================================================================
 
+
 def test_register_user_success(client, app):
     """Test successful user registration creates a user and hashes the password."""
     payload = {
         "username": "newuser",
         "email": "newuser@example.com",
-        "password": "SecurePassword123!"
+        "password": "SecurePassword123!",
     }
     response = client.post("/auth/register", json=payload)
 
@@ -34,7 +35,7 @@ def test_register_duplicate_email(client, app):
     payload = {
         "username": "unique_name",
         "email": "test@example.com",  # Duplicate email
-        "password": "Password123!"
+        "password": "Password123!",
     }
     response = client.post("/auth/register", json=payload)
     print("\nAPI RESPONSE:", response.get_json())
@@ -47,8 +48,8 @@ def test_register_duplicate_username(client, app):
     # The 'app' fixture already creates 'testuser'
     payload = {
         "username": "testuser",  # Duplicate username
-        "email": "unique@example.com",  
-        "password": "Password123!"
+        "email": "unique@example.com",
+        "password": "Password123!",
     }
     response = client.post("/auth/register", json=payload)
 
@@ -62,10 +63,10 @@ def test_register_missing_fields(client, missing_field):
     payload = {
         "username": "test_user",
         "email": "incomplete@example.com",
-        "password": "Password123!"
+        "password": "Password123!",
     }
     del payload[missing_field]
-    
+
     response = client.post("/auth/register", json=payload)
     assert response.status_code in (400, 422)
 
@@ -74,31 +75,29 @@ def test_register_missing_fields(client, missing_field):
 # 2. LOGIN & JWT ISSUANCE TESTS
 # =====================================================================
 
+
 def test_login_success(client, app):
     """Test logging in with valid credentials returns access and refresh JWTs."""
     # First, register a valid user to test login against
     user_payload = {
         "username": "loginuser",
         "email": "login@example.com",
-        "password": "CorrectPassword123!"
+        "password": "CorrectPassword123!",
     }
     client.post("/auth/register", json=user_payload)
 
     # Attempt Login
-    login_payload = {
-        "email": "login@example.com",
-        "password": "CorrectPassword123!"
-    }
+    login_payload = {"email": "login@example.com", "password": "CorrectPassword123!"}
     response = client.post("/auth/login", json=login_payload)
 
     assert response.status_code == 200
     data = response.get_json()
-    
+
     # Assert tokens are present
     assert "access_token" in data
     # If your app issues refresh tokens, uncomment the next line:
-    # assert "refresh_token" in data 
-    
+    # assert "refresh_token" in data
+
     # Assert token format (JWTs have three parts separated by dots)
     assert len(data["access_token"].split(".")) == 3
 
@@ -108,14 +107,11 @@ def test_login_invalid_password(client, app):
     user_payload = {
         "username": "wrongpassuser",
         "email": "wrongpass@example.com",
-        "password": "RealPassword123!"
+        "password": "RealPassword123!",
     }
     client.post("/auth/register", json=user_payload)
 
-    login_payload = {
-        "email": "wrongpass@example.com",
-        "password": "WrongPassword123!"
-    }
+    login_payload = {"email": "wrongpass@example.com", "password": "WrongPassword123!"}
     response = client.post("/auth/login", json=login_payload)
 
     assert response.status_code == 401
@@ -126,7 +122,7 @@ def test_login_nonexistent_user(client):
     """Test logging in with an email that is not in the database fails."""
     login_payload = {
         "email": "doesnotexist@example.com",
-        "password": "SomePassword123!"
+        "password": "SomePassword123!",
     }
     response = client.post("/auth/login", json=login_payload)
 
@@ -136,6 +132,7 @@ def test_login_nonexistent_user(client):
 # =====================================================================
 # 3. PROTECTED ROUTES & JWT AUTHORIZATION TESTS
 # =====================================================================
+
 
 def test_access_protected_route_success(client, auth_headers):
     """Test accessing a protected route with a valid JWT header succeeds."""
@@ -152,7 +149,7 @@ def test_access_protected_route_missing_token(client):
     response = client.get("/auth/me")
 
     assert response.status_code == 401
-    assert "missing" in response.get_json().get("msg", "").lower() 
+    assert "missing" in response.get_json().get("msg", "").lower()
 
 
 def test_access_protected_route_invalid_token(client):
@@ -161,9 +158,10 @@ def test_access_protected_route_invalid_token(client):
     response = client.get("/auth/me", headers=bad_headers)
 
     # Flask-JWT-Extended usually returns 422 for malformed/un-decodeable tokens
-    assert response.status_code == 422 
+    assert response.status_code == 422
     response_msg = response.get_json().get("msg", "").lower()
     assert "segments" in response_msg or "invalid" in response_msg
+
 
 def test_access_protected_route_wrong_header_format(client):
     """Test accessing a protected endpoint with a missing 'Bearer ' prefix fails."""
@@ -179,33 +177,38 @@ def test_access_protected_route_wrong_header_format(client):
 # 4. TOKEN REFRESH TESTS (If applicable)
 # =====================================================================
 
+
 def test_refresh_token_success(client, app):
     """Test that a valid refresh token can be used to get a new access token."""
     # Setup: Register and login a user to get a refresh token
-    client.post("/auth/register", json={
-        "username": "refreshuser",
-        "email": "refresh@example.com",
-        "password": "Password123!"
-    })
-    
-    login_response = client.post("/auth/login", json={
-        "email": "refresh@example.com",
-        "password": "Password123!"
-    })
-    
+    client.post(
+        "/auth/register",
+        json={
+            "username": "refreshuser",
+            "email": "refresh@example.com",
+            "password": "Password123!",
+        },
+    )
+
+    login_response = client.post(
+        "/auth/login", json={"email": "refresh@example.com", "password": "Password123!"}
+    )
+
     data = login_response.get_json()
-    
+
     # Skip this test gracefully if your login route doesn't issue refresh tokens yet
     if "refresh_token" not in data:
         pytest.skip("Refresh tokens not implemented in login response.")
-        
+
     refresh_token = data["refresh_token"]
     refresh_headers = {"Authorization": f"Bearer {refresh_token}"}
-    
+
     # Attempt to use the refresh token to get a new access token
     refresh_response = client.post("/auth/refresh", headers=refresh_headers)
-    
+
     assert refresh_response.status_code == 200
     new_data = refresh_response.get_json()
     assert "access_token" in new_data
-    assert new_data["access_token"] != data["access_token"]  # Should be a newly generated token
+    assert (
+        new_data["access_token"] != data["access_token"]
+    )  # Should be a newly generated token

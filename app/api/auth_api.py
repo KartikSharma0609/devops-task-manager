@@ -91,20 +91,16 @@ class Login(Resource):
 
 @auth_ns.route("/me", doc={"security": "Bearer Auth"})
 class UserProfile(Resource):
-    
+
     @jwt_required()
     def get(self):
         """Get the current logged-in user's profile."""
         # get_jwt_identity() returns the string we passed to create_access_token()
-        current_user_id = get_jwt_identity() 
-        
+        current_user_id = get_jwt_identity()
+
         user = User.query.get(current_user_id)
-        
+
         if not user:
             abort(404, message="User not found")
-            
-        return {
-            "id": user.id, 
-            "username": user.username, 
-            "email": user.email
-        }, 200
+
+        return {"id": user.id, "username": user.username, "email": user.email}, 200

@@ -2,6 +2,7 @@ from app.database import db
 from app.models import Task
 from app.models import User
 
+
 def test_delete_task(client, auth_headers):
 
     with client.application.app_context():
