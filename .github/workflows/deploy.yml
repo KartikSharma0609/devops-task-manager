@@ -11,7 +11,9 @@ jobs:
 
   deploy:
 
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: >
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'main'
 
     runs-on: ubuntu-latest
 
@@ -19,17 +21,44 @@ jobs:
       id-token: write
       contents: read
 
+    env:
+      AWS_REGION: ap-south-1
+      ECR_REGISTRY: 689505268101.dkr.ecr.ap-south-1.amazonaws.com
+      ECR_REPOSITORY: devops-task-manager
+      IMAGE_TAG: ${{ github.event.workflow_run.head_sha }}
+
     steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
-          aws-region: ap-south-1
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            -t "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" \
+            -t "$ECR_REGISTRY/$ECR_REPOSITORY:latest" \
+            .
+
+      - name: Push Docker image
+        run: |
+          docker push "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+          docker push "$ECR_REGISTRY/$ECR_REPOSITORY:latest"
 
       - name: Deploy through AWS Systems Manager
         env:
           INSTANCE_ID: ${{ secrets.EC2_INSTANCE_ID }}
+
         run: |
 
           set -e
@@ -44,17 +73,22 @@ jobs:
               "export HOME=/home/ec2-user",
               "cd /home/ec2-user/devops-task-manager",
               "git config --global --add safe.directory /home/ec2-user/devops-task-manager",
-              "echo Pulling latest code...",
+              "echo Pulling latest deployment configuration...",
               "git pull origin main",
+              "echo Logging into Amazon ECR...",
+              "aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 689505268101.dkr.ecr.ap-south-1.amazonaws.com",
+              "echo Pulling Docker image...",
+              "docker pull 689505268101.dkr.ecr.ap-south-1.amazonaws.com/devops-task-manager:${{ github.event.workflow_run.head_sha }}",
               "echo Deploying application...",
-              "docker compose -f docker-compose.prod.yml up -d --build",
-              "echo Cleaning unused Docker images...",
-              "docker image prune -f",
+              "ECR_REGISTRY=689505268101.dkr.ecr.ap-south-1.amazonaws.com IMAGE_TAG=${{ github.event.workflow_run.head_sha }} docker compose -f docker-compose.prod.yml up -d",
               "echo Deployment status:",
               "docker compose -f docker-compose.prod.yml ps",
               "echo Waiting for application to become healthy...",
-              "sleep 10",
-              "curl -f http://localhost/system/health"
+              "for i in $(seq 1 12); do if curl -fsS http://localhost/system/health; then echo Application healthy!; exit 0; fi; echo Application not ready yet...; sleep 5; done",
+              "echo Application failed to become healthy",
+              "docker compose -f docker-compose.prod.yml ps",
+              "docker logs task-manager --tail 100",
+              "exit 1"
             ]' \
             --query "Command.CommandId" \
             --output text)
