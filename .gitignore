@@ -13,3 +13,8 @@ migrations/__pycache__/
 htmlcov/
 
 *.log
+
+# Terraform
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.*
