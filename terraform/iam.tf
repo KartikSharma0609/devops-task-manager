@@ -1,5 +1,5 @@
 resource "aws_iam_role" "ec2_ssm" {
-  name        = "EC2-DevOpsTaskManager-SSM"
+  name        = var.iam_role_name
   description = "Allows EC2 instances to call AWS services on your behalf."
 
   assume_role_policy = jsonencode({
@@ -53,13 +53,13 @@ resource "aws_iam_role_policy" "ecr_pull" {
           "ecr:DescribeImages"
         ]
 
-        Resource = "arn:aws:ecr:ap-south-1:689505268101:repository/devops-task-manager"
+        Resource = aws_ecr_repository.task_manager.arn
       }
     ]
   })
 }
 
 resource "aws_iam_instance_profile" "ec2_ssm" {
-  name = "EC2-DevOpsTaskManager-SSM"
+  name = var.iam_role_name
   role = aws_iam_role.ec2_ssm.name
 }

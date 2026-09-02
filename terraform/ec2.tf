@@ -1,16 +1,16 @@
 resource "aws_instance" "task_manager" {
-  ami           = "ami-0ac7b260cf76d8865"
-  instance_type = "t3.micro"
+  ami           = var.ami_id
+  instance_type = var.instance_type
 
-  subnet_id = "subnet-01112699a2813b67c"
+  subnet_id = var.subnet_id
 
   vpc_security_group_ids = [
     aws_security_group.task_manager.id
   ]
 
-  key_name = "devops-task-manager-key"
+  key_name = var.key_name
 
-  iam_instance_profile = "EC2-DevOpsTaskManager-SSM"
+  iam_instance_profile = aws_iam_instance_profile.ec2_ssm.name
 
   ebs_optimized = true
 

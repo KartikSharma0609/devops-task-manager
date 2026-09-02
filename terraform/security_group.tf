@@ -1,7 +1,7 @@
 resource "aws_security_group" "task_manager" {
   name        = "devops-task-manager-sg"
   description = "Security group for DevOps Task Manager"
-  vpc_id      = "vpc-02c013b95e8523152"
+  vpc_id      = var.vpc_id
 
   ingress {
     from_port   = 80
@@ -14,7 +14,7 @@ resource "aws_security_group" "task_manager" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["103.251.209.64/32"]
+    cidr_blocks = [var.ssh_allowed_cidr]
   }
 
   egress {

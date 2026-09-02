@@ -1,3 +1,3 @@
 resource "aws_ecr_repository" "task_manager" {
-  name = "devops-task-manager"
+  name = var.ecr_repository_name
 }
