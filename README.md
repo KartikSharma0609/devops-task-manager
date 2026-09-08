@@ -11,13 +11,13 @@ The project demonstrates the complete backend development lifecycle—from desig
 **API Base URL**
 
 ```
-https://devops-task-manager-7n2q.onrender.com
+http://3.109.123.245/
 ```
 
 **Swagger Documentation**
 
 ```
-https://devops-task-manager-7n2q.onrender.com/docs
+http://3.109.123.245/docs
 ```
 
 ---
