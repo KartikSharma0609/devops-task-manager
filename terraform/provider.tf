@@ -9,12 +9,12 @@ terraform {
   }
 
   backend "s3" {
-      bucket = "kartik-devops-task-manager-terraform-state-689505268101"
-      key    = "devops-task-manager/terraform.tfstate"
-      region = "ap-south-1"
-      use_lockfile = true
-    }
+    bucket       = "kartik-devops-task-manager-terraform-state-689505268101"
+    key          = "devops-task-manager/terraform.tfstate"
+    region       = "ap-south-1"
+    use_lockfile = true
   }
+}
 
 provider "aws" {
   region = var.aws_region
