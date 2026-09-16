@@ -16,6 +16,7 @@ jobs:
   terraform-apply:
     name: Terraform Apply
     runs-on: ubuntu-latest
+    environment: production
 
     defaults:
       run:
@@ -54,4 +55,3 @@ jobs:
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
-        environment: production
