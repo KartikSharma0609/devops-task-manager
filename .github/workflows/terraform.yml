@@ -1,34 +1,33 @@
-name: Terraform CI
+name: Terraform Plan & Apply
 
 on:
   push:
+    branches:
+      - main
     paths:
       - "terraform/**"
       - ".github/workflows/terraform.yml"
   pull_request:
     paths:
       - "terraform/**"
-      - ".github/workflows/terraform.yml"
 
 permissions:
   id-token: write
   contents: read
 
 jobs:
-  terraform:
-    name: Terraform Validate & Plan
+  plan:
+    name: Terraform Plan
     runs-on: ubuntu-latest
-
     defaults:
       run:
         working-directory: terraform
-
+    outputs:
+      changes: ${{ steps.plan.outputs.exitcode }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
+      - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "1.16.1"
 
@@ -37,19 +36,57 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::689505268101:role/GitHubActions-Terraform
           aws-region: ap-south-1
-          role-session-name: GitHubActionsTerraform
+          role-session-name: GitHubActionsTerraformPlan
 
-      - name: Verify AWS Identity
-        run: aws sts get-caller-identity
-
-      - name: Terraform Format Check
-        run: terraform fmt -check -recursive
-
-      - name: Terraform Init
-        run: terraform init
-
-      - name: Terraform Validate
-        run: terraform validate
+      - run: terraform fmt -check -recursive
+      - run: terraform init
+      - run: terraform validate
 
       - name: Terraform Plan
-        run: terraform plan
+        id: plan
+        run: |
+          set +e
+          terraform plan -detailed-exitcode -out=tfplan
+          echo "exitcode=$?" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Upload plan artifact
+        if: steps.plan.outputs.exitcode == 2
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan
+          path: terraform/tfplan
+
+  apply:
+    name: Terraform Apply
+    needs: plan
+    if: needs.plan.outputs.changes == '2' && github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    environment: production
+    defaults:
+      run:
+        working-directory: terraform
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.16.1"
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: arn:aws:iam::689505268101:role/GitHubActions-Terraform
+          aws-region: ap-south-1
+          role-session-name: GitHubActionsTerraformApply
+
+      - run: terraform init
+
+      - name: Download plan artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan
+          path: terraform
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve tfplan
