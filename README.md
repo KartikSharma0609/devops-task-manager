@@ -11,13 +11,13 @@ The project demonstrates the complete backend development lifecycle—from desig
 **API Base URL**
 
 ```
-http://3.109.123.245/
+http://3.110.136.168/
 ```
 
 **Swagger Documentation**
 
 ```
-http://3.109.123.245/docs
+http://3.110.136.168/docs
 ```
 
 ---
