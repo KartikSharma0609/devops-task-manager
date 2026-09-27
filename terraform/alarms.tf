@@ -59,6 +59,7 @@ resource "aws_cloudwatch_metric_alarm" "high_cpu" {
 
   dimensions = {
     InstanceId = aws_instance.task_manager.id
+    cpu        = "cpu-total"
   }
 }
 
