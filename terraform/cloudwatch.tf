@@ -47,8 +47,6 @@ resource "aws_ssm_parameter" "cloudwatch_agent_config" {
   })
 }
 
-# ... aws_ssm_association and aws_cloudwatch_dashboard blocks stay exactly as before ...
-
 resource "aws_ssm_association" "cloudwatch_agent" {
   name = "AmazonCloudWatch-ManageAgent"
 
@@ -120,10 +118,26 @@ resource "aws_cloudwatch_dashboard" "main" {
         }
       },
       {
-        type   = "log"
+        type   = "metric"
         x      = 12
         y      = 6
         width  = 12
+        height = 6
+        properties = {
+          title  = "CPU Idle % (Agent-collected)"
+          region = var.aws_region
+          metrics = [
+            ["DevOpsTaskManager", "cpu_usage_idle", "InstanceId", aws_instance.task_manager.id, "cpu", "cpu-total"]
+          ]
+          period = 300
+          stat   = "Average"
+        }
+      },
+      {
+        type   = "log"
+        x      = 0
+        y      = 12
+        width  = 24
         height = 6
         properties = {
           title  = "Recent Application Logs"
