@@ -51,3 +51,8 @@ variable "iam_role_name" {
   type        = string
   default     = "EC2-DevOpsTaskManager-SSM"
 }
+
+variable "alert_email" {
+  description = "Email address for CloudWatch alarm notifications"
+  type        = string
+}
