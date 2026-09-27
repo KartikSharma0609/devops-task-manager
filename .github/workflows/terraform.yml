@@ -33,6 +33,9 @@ jobs:
         with:
           terraform_version: "1.16.1"
 
+      - name: Terraform Version
+        run: terraform version
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v6
         with:
@@ -47,15 +50,14 @@ jobs:
       - name: Terraform Plan
         id: plan
         run: |
-          set +e
-          terraform plan -detailed-exitcode -out=tfplan
-          PLAN_EXIT=$?
-          echo "Terraform plan exit code: $PLAN_EXIT"
-          echo "exitcode=$PLAN_EXIT" >> "$GITHUB_OUTPUT"
-          exit 0
+          terraform plan -out=tfplan
+          terraform show -json tfplan > plan.json
+          CHANGES=$(jq '[.resource_changes[] | select(.change.actions != ["no-op"])] | length' plan.json)
+          echo "Real resource changes detected: $CHANGES"
+          echo "exitcode=$CHANGES" >> "$GITHUB_OUTPUT"
 
       - name: Upload plan artifact
-        if: steps.plan.outputs.exitcode == '2'
+        if: steps.plan.outputs.exitcode != '0'
         uses: actions/upload-artifact@v4
         with:
           name: tfplan
@@ -64,7 +66,7 @@ jobs:
   apply:
     name: Terraform Apply
     needs: plan
-    if: needs.plan.outputs.changes == '2' && github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: needs.plan.outputs.changes != '0' && github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
     environment: production
     defaults:
@@ -78,6 +80,9 @@ jobs:
       - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "1.16.1"
+
+      - name: Terraform Version
+        run: terraform version
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v6
