@@ -5,7 +5,7 @@ A production-style **REST API** (Flask + PostgreSQL) deployed on **AWS** with a 
 This project covers the whole lifecycle: **code → test → container → registry → infrastructure → deploy → monitor → alert.**
 
 > **Live demo** (public IP changes when the instance is stopped/started, since no Elastic IP is used to keep costs at zero):
-> API: `http://<EC2_PUBLIC_IP>/` · Swagger UI: `http://<EC2_PUBLIC_IP>/docs`
+> API: `http://3.110.136.168/` · Swagger UI: `http://3.110.136.168/docs`
 > Current IP: `terraform output ec2_public_ip`
 
 ---
