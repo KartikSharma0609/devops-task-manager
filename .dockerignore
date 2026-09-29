@@ -41,3 +41,8 @@ README.md
 
 # Database files
 *.db
+
+# Frontend
+app/frontend_dist
+frontend/node_modules
+frontend/dist

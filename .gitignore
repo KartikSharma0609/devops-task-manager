@@ -19,3 +19,8 @@ terraform/.terraform/
 terraform/*.tfstate
 terraform/*.tfstate.*
 terraform/*.tfvars
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+app/frontend_dist
