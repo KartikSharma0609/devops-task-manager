@@ -28,15 +28,17 @@ def create_app(config_class=Config):
     # (tests, local API-only runs) "/" keeps returning the JSON status.
     frontend_dist = Path(app.root_path) / "frontend_dist"
 
-    if frontend_dist.exists():
+    frontend_dist = Path(app.root_path) / "frontend_dist"
 
+    if frontend_dist.exists():
         @app.route("/", methods=["GET"])
         def root_index():
             return send_from_directory(frontend_dist, "index.html")
 
-        @app.route("/assets/<path:filename>", methods=["GET"])
+        # Safely serve your Vanilla JS files from the root of frontend_dist
+        @app.route("/<any('app.js', 'styles.css'):filename>", methods=["GET"])
         def frontend_assets(filename):
-            return send_from_directory(frontend_dist / "assets", filename)
+            return send_from_directory(frontend_dist, filename)
 
     else:
 

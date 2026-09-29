@@ -1,12 +1,58 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>DevOps Task Manager</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DevOps Task Manager</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main id="auth" class="auth" hidden>
+    <h1>DevOps Task Manager</h1>
+    <p class="sub">Sign in to manage your tasks.</p>
+    <div class="tabs" role="tablist">
+      <button type="button" role="tab" id="tab-login" aria-selected="true">Sign in</button>
+      <button type="button" role="tab" id="tab-register" aria-selected="false">Create account</button>
+    </div>
+    <p id="auth-msg" class="msg" role="alert" hidden></p>
+
+    <form id="login-form">
+      <label>Email <input name="email" type="email" maxlength="255" autocomplete="email" required></label>
+      <label>Password <input name="password" type="password" autocomplete="current-password" required></label>
+      <button class="primary" type="submit">Sign in</button>
+    </form>
+
+    <form id="register-form" hidden>
+      <label>Username <input name="username" maxlength="100" autocomplete="username" required></label>
+      <label>Email <input name="email" type="email" maxlength="255" autocomplete="email" required></label>
+      <label>Password <input name="password" type="password" minlength="8" autocomplete="new-password" required></label>
+      <button class="primary" type="submit">Create account</button>
+    </form>
+  </main>
+
+  <div id="app" class="app" hidden>
+    <header class="top">
+      <h1>Your tasks</h1>
+      <div class="who"><span id="who"></span><button id="logout" type="button">Sign out</button></div>
+    </header>
+
+    <form id="add-form" class="add">
+      <input name="title" maxlength="100" placeholder="What needs doing?" aria-label="Task title" required>
+      <select name="status" aria-label="Status"></select>
+      <button class="primary" type="submit">Add task</button>
+    </form>
+
+    <div class="toolbar">
+      <div id="filters" class="filters" role="group" aria-label="Filter by status"></div>
+      <input id="search" type="search" placeholder="Search tasks" aria-label="Search tasks">
+    </div>
+
+    <ul id="list" class="list"></ul>
+    <p id="empty" class="empty" hidden></p>
+    <footer class="foot"><span id="dot" class="dot"></span><span id="health">Checking API…</span></footer>
+  </div>
+
+  <div id="toast" class="toast" role="status" hidden></div>
+  <script src="app.js"></script>
+</body>
 </html>

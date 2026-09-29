@@ -1,16 +1,3 @@
-# ---- Stage 1: build the React frontend (runs in CI, not on the EC2 host) ----
-FROM node:22-alpine AS frontend
-
-WORKDIR /frontend
-
-COPY frontend/package.json frontend/package-lock.json ./
-
-RUN npm ci
-
-COPY frontend/ .
-
-RUN npm run build
-
 # ---- Stage 2: Flask API image ----
 FROM python:3.13-slim-bookworm
 
@@ -43,7 +30,7 @@ RUN groupadd -r appgroup && \
 
 COPY . .
 
-COPY --from=frontend /frontend/dist /app/app/frontend_dist
+COPY frontend/ /app/app/frontend_dist/
 
 RUN chmod +x start.sh
 
