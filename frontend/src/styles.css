@@ -25,7 +25,7 @@ button.link { background: none; color: var(--accent); padding: 0; }
 .center { text-align: center; }
 .filters { display: flex; gap: 6px; margin: 12px 0; flex-wrap: wrap; }
 .chip { background: transparent; color: var(--muted); border: 1px solid var(--border); border-radius: 999px; padding: 4px 12px; }
-.chip.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+.chip.on { background: var(--accent); color: #040210; border-color: var(--accent); }
 .badge { font-size: .75rem; padding: 2px 10px; border-radius: 999px; background: var(--border); }
 .badge.done { background: var(--ok); color: #fff; }
 .badge.in-progress { background: var(--accent); color: #fff; }
