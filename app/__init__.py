@@ -24,13 +24,10 @@ def create_app(config_class=Config):
 
     Migrate(app, db)
 
-    # The built React app is copied here by the Dockerfile. When it is absent
-    # (tests, local API-only runs) "/" keeps returning the JSON status.
-    frontend_dist = Path(app.root_path) / "frontend_dist"
-
     frontend_dist = Path(app.root_path) / "frontend_dist"
 
     if frontend_dist.exists():
+
         @app.route("/", methods=["GET"])
         def root_index():
             return send_from_directory(frontend_dist, "index.html")
